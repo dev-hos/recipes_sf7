@@ -3,10 +3,15 @@
 namespace App\Entity;
 
 use App\Repository\RecipesRepository;
+use App\Validator\BanWord;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RecipesRepository::class)]
+#[UniqueEntity('title', message: 'Cette valeur est déjà utilisée')]
+#[UniqueEntity('slug', message: 'Cette valeur est déjà utilisée')]
 class Recipes
 {
     #[ORM\Id]
@@ -15,13 +20,17 @@ class Recipes
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $title = null;
+    #[Assert\Length(min: 5, minMessage:'Le titre doit contenir au minimum 5 caractères')]
+    #[BanWord()]
+    private string $title = '';
 
     #[ORM\Column(length: 255)]
-    private ?string $slug = null;
+    #[Assert\Length(min: 5)]
+    #[Assert\Regex('/^[a-z0-9-]+$/', message: 'Le slug doit être constitué uniquement de lettres, chiffres et tirets.')]
+    private string $slug = '';
 
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $content = null;
+    private string $content = '';
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -30,6 +39,8 @@ class Recipes
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\Positive()]
+    #[Assert\LessThan(value: 1440)]
     private ?int $duration = null;
 
     public function getId(): ?int
@@ -37,7 +48,7 @@ class Recipes
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -49,7 +60,7 @@ class Recipes
         return $this;
     }
 
-    public function getSlug(): ?string
+    public function getSlug(): string
     {
         return $this->slug;
     }
@@ -61,7 +72,7 @@ class Recipes
         return $this;
     }
 
-    public function getContent(): ?string
+    public function getContent(): string
     {
         return $this->content;
     }

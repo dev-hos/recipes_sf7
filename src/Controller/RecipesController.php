@@ -19,7 +19,7 @@ class RecipesController extends AbstractController
     public function index(RecipesRepository $recipesRepository): Response
     {
         return $this->render('recipes/index.html.twig', [
-            'recipes' => $recipesRepository->findByDuratin(35),
+            'recipes' => $recipesRepository->findAll(),
         ]);
     }
 
