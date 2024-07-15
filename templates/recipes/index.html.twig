@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello RecipesController!
+{% endblock %}
+
+{% block body %}
+    <h1>Liste des recettes</h1>
+	{# <pre>
+			    {{ dump(app.current_route) }}
+			</pre>
+			<p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Unde vel cumque magni error eligendi in, nemo doloremque obcaecati iste libero. Perferendis, consectetur. Aut maxime natus consequatur aliquam illum beatae ducimus?</p>
+			<li>
+			    <a href="{{path('app_recipes_show', {id: 15, slug: 'pates-bolognaises'})}}">pates bolognaises</a>
+			</li> #}
+
+	<div class="content w-100 d-flex gap-3">
+		{% for recipe in recipes %}
+			<div class="card" style="width: 18rem;">
+				<img src="..." class="card-img-top" alt="...">
+				<div class="card-body">
+					<h3 class="card-title">{{recipe.title}}</h3>
+					<p class="card-text h-70">
+						{{recipe.content | u.truncate(50, '...', false)}}
+					</p>
+					<a href="{{path('app_recipes_show', {id: recipe.id, slug: recipe.slug})}}" class="btn btn-primary">Go somewhere</a>
+				</div>
+			</div>
+
+		{% endfor %}
+	</div>
+
+
+{% endblock %}
