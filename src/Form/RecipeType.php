@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Recipes;
+use App\Services\FormListenerFactory;
 use DateTimeZone;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Event\PostSubmitEvent;
@@ -18,7 +19,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class RecipeType extends AbstractType
 {
-    public function __construct(private readonly SluggerInterface $slugger)
+    public function __construct(private readonly FormListenerFactory $factory)
     {
     }
 
@@ -35,32 +36,13 @@ class RecipeType extends AbstractType
                 'empty_data' => ''
             ])
             ->add('duration')
-            ->addEventListener(FormEvents::PRE_SUBMIT, $this->autoSlug(...))
-            ->addEventListener(FormEvents::POST_SUBMIT, $this->timestamp(...))
+            ->addEventListener(FormEvents::PRE_SUBMIT, $this->factory->autoSlug('title'))
+            ->addEventListener(FormEvents::POST_SUBMIT, $this->factory->timestamp())
             ->add('save', SubmitType::class, [
                 'label' => 'Enregistrer',
             ]);
     }
 
-    private function autoSlug(PreSubmitEvent $event): void
-    {
-
-        $data = $event->getData();
-        if (empty($data['slug'])) {
-            $data['slug'] = strtolower($this->slugger->slug($data['title']));
-            $event->setData($data);
-        }
-    }
-
-    private function timestamp(PostSubmitEvent $postSubmitEvent): void
-    {
-        $timezone = new DateTimeZone('Europe/Paris');
-        $data = $postSubmitEvent->getData();
-        $data->setUpdatedAt(new \DateTimeImmutable('now', $timezone));
-        if (!$data->getId()) {
-            $data->setCreatedAt(new \DateTimeImmutable('now', $timezone));
-        }
-    }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
