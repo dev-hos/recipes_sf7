@@ -22,11 +22,13 @@ class RecipesRepository extends ServiceEntityRepository
      * @param integer $duration
      * @return Recipes[]
      */
-    public function findByDuratin (int $duration): array
+    public function findByDuration (int $duration): array
     {
         return $this->createQueryBuilder('r')
+            ->select('r', 'c')
             ->where('r.duration < :duration')
             ->setParameter('duration', $duration)
+            ->leftJoin('r.category', 'c')
             ->orderBy('r.duration', 'ASC')
             ->getQuery()
             ->getResult()

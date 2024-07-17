@@ -1,10 +1,13 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
+use App\Entity\Categories;
 use App\Entity\Recipes;
 use App\Form\RecipeType;
+use App\Repository\CategoriesRepository;
 use App\Repository\RecipesRepository;
+use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,13 +15,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 
-#[Route('/recipes', name: 'app_recipes_')]
+#[Route('/admin/recipes', name: 'admin.recipes.')]
 class RecipesController extends AbstractController
 {
     #[Route('', name: 'index', methods: ['GET'])]
     public function index(RecipesRepository $recipesRepository): Response
     {
-        return $this->render('recipes/index.html.twig', [
+        
+        return $this->render('admin/recipes/index.html.twig', [
             'recipes' => $recipesRepository->findAll(),
         ]);
     }
@@ -26,7 +30,7 @@ class RecipesController extends AbstractController
     #[Route('/{slug}-{id}', name: 'show', requirements: ['slug' => '[a-z0-9-]+', 'id' => '\d+'], methods: ['GET'])]
     public function show(Recipes $Recipe): Response
     {
-        return $this->render('recipes/show.html.twig', [
+        return $this->render('admin/recipes/show.html.twig', [
             // 'slug' => $slug,
             // 'id' => $id,
             // 'demo' => '<strong> demo </strong>'
@@ -45,10 +49,10 @@ class RecipesController extends AbstractController
             $em->persist($recipe);
             $em->flush();
             $this->addFlash('success', 'La recette a bien été créée');
-            return $this->redirectToRoute('app_recipes_index');
+            return $this->redirectToRoute('admin.recipes.index');
         }
 
-        return $this->render('recipes/add.html.twig', [
+        return $this->render('admin/recipes/add.html.twig', [
             'form' => $form,
         ]);
     }
@@ -62,10 +66,10 @@ class RecipesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
             $this->addFlash('success', 'La recette a bien été modifiée');
-            return $this->redirectToRoute('app_recipes_index');
+            return $this->redirectToRoute('admin.recipes.index');
         }
 
-        return $this->render('recipes/edit.html.twig', [
+        return $this->render('admin/recipes/edit.html.twig', [
             'recipe' => $Recipe,
             'form' => $form
         ]);
@@ -77,7 +81,7 @@ class RecipesController extends AbstractController
         $em->remove($recipes);
         $em->flush();
         $this->addFlash('success', 'La recette a bien été supprimée');
-        return $this->redirectToRoute('app_recipes_index');
+        return $this->redirectToRoute('admin.recipes.index');
     }
 
 
