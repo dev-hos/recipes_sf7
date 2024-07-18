@@ -4,8 +4,16 @@
 
 {% block body %} 
 <h1>{{recipe.title}}</h1>
-<p> {{recipe.content}} </p>
-<p> <em class="text-muted">durée : {{ recipe.duration }} mn</em> </p>
-<p><em class="text-muted"> Créer le {{recipe.createdAt | date('d-m-Y à\ H:i:s')}} </em></p>
-<p><em class="text-muted"> Modifiée le {{recipe.updatedAt | date('d-m-Y à\ H:i:s')}} </em></p>
+<div class="row">
+    <div class="col-sm">
+        <img src="{{vich_uploader_asset(recipe, 'thumbnailFile')}}" alt="">
+    </div>
+    <div class="col-sm">
+        <p> {{recipe.content}} </p>
+        <p> <em class="text-muted">durée : {{ recipe.duration }} mn</em> </p>
+        <p><em class="text-muted"> Créer le {{recipe.createdAt | date('d-m-Y à\ H:i:s')}} </em></p>
+        <p><em class="text-muted"> Modifiée le {{recipe.updatedAt | date('d-m-Y à\ H:i:s')}} </em></p>
+    </div>
+</div>
+
 {% endblock %}

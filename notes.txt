@@ -1,1 +1,5 @@
 prise de notes pendant l'apprentissage du framework php symfony 7
+
+- pour l'upload des fichiers si on utilise Vich uploader il faut supprimer la logique personnalisée dans le controller sinon on obtien une erreur "/tmp/PHP ..." not readable
+- faire attention à la propriété du fichier dans le formulaire : elle doit etre mappée (enlever 'mapped' => false)
+- il faut impérativement qu'il y ai un flush() qui soit fait pour que Vich fasse l'upload du fichier 
